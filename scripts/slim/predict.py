@@ -1,4 +1,7 @@
 import tensorflow as tf
+from tensorflow.compat.v1 import ConfigProto
+#from tensorflow.compat.v1 import InteractiveSession
+
 slim = tf.contrib.slim
 import sys
 import os
@@ -11,7 +14,10 @@ from os import listdir
 from os.path import isfile, join
 from os import walk
 #os.environ['CUDA_VISIBLE_DEVICES'] = '' #Uncomment this line to run prediction on CPU.
-session = tf.Session()
+config = ConfigProto()
+config.gpu_options.allow_growth = True # NOTE:  arregla el problema de correr con una rtx
+#session = InteractiveSession(config=config)
+session = tf.Session(config=config)
 
 def get_test_images(mypath):
 	return [mypath + '/' + f for f in listdir(mypath) if isfile(join(mypath, f)) and f.find('.jpg') != -1]
@@ -26,7 +32,7 @@ def transform_img_fn(path_list):
 
 
 if __name__ == '__main__':
-	
+
 
 	if len(sys.argv) != 6:
 		print("The script needs five arguments.")

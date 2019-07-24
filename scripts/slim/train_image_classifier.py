@@ -20,12 +20,19 @@ from __future__ import print_function
 
 import tensorflow as tf
 
+from tensorflow.compat.v1 import ConfigProto
+from tensorflow.compat.v1 import InteractiveSession
+
 from datasets import dataset_factory
 from deployment import model_deploy
 from nets import nets_factory
 from preprocessing import preprocessing_factory
 
 slim = tf.contrib.slim
+
+config = ConfigProto()
+config.gpu_options.allow_growth = True
+session = InteractiveSession(config=config)
 
 tf.app.flags.DEFINE_string(
     'master', '', 'The address of the TensorFlow master to use.')
