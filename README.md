@@ -1,5 +1,10 @@
 # Stork
 
+Original proyect:
+https://github.com/ih-lab/STORK
+
+Original README:
+
 Classify IVF images in real time.
 
 [![Python 2.7](https://img.shields.io/badge/python-2.7-blue.svg)](https://www.python.org/downloads/release/python-360/)
@@ -54,6 +59,7 @@ $ python predict.py v1 ../result/ ../../Images/test output.txt 2
 
 $ python acc.py
 
+*Psicobloc* CUDNN fix for RTX GPU's
 
 *https://kwotsin.github.io/tech/2017/02/11/transfer-learning.html
 
