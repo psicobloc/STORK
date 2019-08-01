@@ -13,7 +13,7 @@ from preprocessing import inception_preprocessing
 from os import listdir
 from os.path import isfile, join
 from os import walk
-#os.environ['CUDA_VISIBLE_DEVICES'] = '' #Uncomment this line to run prediction on CPU.
+os.environ['CUDA_VISIBLE_DEVICES'] = '' #Uncomment this line to run prediction on CPU.
 config = ConfigProto()
 config.gpu_options.allow_growth = True # NOTE:  arregla el problema de correr con una rtx
 #session = InteractiveSession(config=config)

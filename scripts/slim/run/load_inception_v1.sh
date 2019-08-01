@@ -13,7 +13,7 @@ python train_image_classifier.py \
   --model_name=inception_v1 \
   --checkpoint_path=${PRETRAINED_CHECKPOINT_DIR}/inception_v1.ckpt \
   --checkpoint_exclude_scopes=InceptionV1/Logits \
-  --max_number_of_steps=6000 \ #originalemtne en 500
+  --max_number_of_steps=7000 \ #originalmente en 500
   --batch_size=32 \
   --learning_rate=0.01 \
   --save_interval_secs=100 \
