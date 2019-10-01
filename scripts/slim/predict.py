@@ -26,7 +26,7 @@ def transform_img_fn(path_list):
 
 
 if __name__ == '__main__':
-
+	
 
 	if len(sys.argv) != 6:
 		print("The script needs five arguments.")

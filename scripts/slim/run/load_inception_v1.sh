@@ -21,4 +21,4 @@ python train_image_classifier.py \
   --log_every_n_steps=300 \
   --optimizer=rmsprop \
   --weight_decay=0.00004\
-  --clone_on_cpu=False
+  --clone_on_cpu=True
