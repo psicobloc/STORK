@@ -12,6 +12,8 @@ import tensorflow as tf
 sys.path.append("slim/datasets") #add the "datasets" directory from "slim" to the system path
 import dataset_utils
 
+
+
 # Seed for repeatability.
 _RANDOM_SEED = 0
 
@@ -27,11 +29,11 @@ class ImageReader(object):
     self._decode_jpeg_data = tf.placeholder(dtype=tf.string)
     self._decode_jpeg = tf.image.decode_jpeg(self._decode_jpeg_data, channels=3)
 
-  def read_image_dims(self, sess, image_data): # NOTE: que es sess? session? cual session?
+  def read_image_dims(self, sess, image_data):
     image = self.decode_jpeg(sess, image_data)
     return image.shape[0], image.shape[1]
 
-  def decode_jpeg(self, sess, image_data):          #porque se usa la session para decodificar? para que se usa feed_dict?
+  def decode_jpeg(self, sess, image_data):
     image = sess.run(self._decode_jpeg,
                      feed_dict={self._decode_jpeg_data: image_data})
     assert len(image.shape) == 3
@@ -82,7 +84,7 @@ def _convert_dataset(split_name, filenames, class_names_to_ids, dataset_dir, out
       (integers).
     dataset_dir: The directory where the converted datasets are stored.
   """
-  #assert split_name in ['train', 'validation']  # TODO: modificar esta linea para permitir solamente train%d y validation%d
+  assert split_name in ['train', 'validation']
 
   num_per_shard = int(math.ceil(len(filenames) / float(_NUM_SHARDS)))
 
@@ -126,23 +128,16 @@ def _dataset_exists(dataset_dir, output_dir):
         return False
   return True
 
-if __name__ == '__main__': # NOTE: HUGO this code was (slightly)modified from the original for k fold cross validation inclusion
-
-  if len(sys.argv) != 5:
-    print("The script needs four arguments.") 
+if __name__ == '__main__':
+  
+  if len(sys.argv) != 4:
+    print("The script needs three arguments.")
     print("The first argument should be a directory containing a set of subdirectories representing class names. Each subdirectory should contain PNG or JPG encoded images.")
     print("The second argument should be output directory.")
-    print("The third argument should be the percentage of images we are going to use for valdiation set (between 0 to 100).")
-    print("The fourth argument should be the number k for k fold cross validation, k * %validation must be < 100")
+    print("The third argument should be the percentage of images we are going to use for valdiation set (between 0 to 100)")
     exit()
 
-    #python convert.py ../Images/train process/ 0 1
-
   file_directory = sys.argv[1]
-  if int(sys.argv[3]) * int(sys.argv[4]) >= 100:
-      print("k * %validation must be less than 100")
-      exit()
-
   dataset_dir = file_directory
   if not os.path.exists(dataset_dir):
     print('The directory for dataset (i.e., "' + dataset_dir +   '") does not exist.')
@@ -160,39 +155,21 @@ if __name__ == '__main__': # NOTE: HUGO this code was (slightly)modified from th
   _NUM_VALIDATION = int(len(image_filenames) * validation_percentage)
   class_names_to_ids = dict(zip(class_names, range(len(class_names))))
 
-  k = int(sys.argv[4])
-
   # Divide into train and test:
   random.seed(_RANDOM_SEED)
   random.shuffle(image_filenames)
+  training_filenames = image_filenames[_NUM_VALIDATION:]
+  validation_filenames = image_filenames[:_NUM_VALIDATION]
 
-  validation_filenames = []
-  training_filenames = []
-  i = 0
-  validation_index = _NUM_VALIDATION
-  aux_index = 0
-  while i < k:
-
-      validation_filenames.append(image_filenames[aux_index:validation_index])
-      training_filenames.append(image_filenames[:aux_index] + image_filenames[validation_index:])
-
-      # First, convert the training and validation sets.
-      _convert_dataset('validation%d' %i, validation_filenames[i], class_names_to_ids,
-                       dataset_dir, output_dir)
-
-      _convert_dataset('train%d' %i, training_filenames[i], class_names_to_ids,
-                       dataset_dir, output_dir)
-
-      aux_index += _NUM_VALIDATION
-      validation_index += _NUM_VALIDATION
-      i += 1
-
-  #training_filenames = image_filenames[_NUM_VALIDATION:]
-  #validation_filenames = image_filenames[:_NUM_VALIDATION]
+  # First, convert the training and validation sets.
+  _convert_dataset('train', training_filenames, class_names_to_ids,
+                   dataset_dir, output_dir)
+  _convert_dataset('validation', validation_filenames, class_names_to_ids,
+                   dataset_dir, output_dir)
 
   # Finally, write the labels file:
   labels_to_class_names = dict(zip(range(len(class_names)), class_names))
   dataset_utils.write_label_file(labels_to_class_names, output_dir)
 
-  print('\nFinished converting %d datasets!' %k)
+  print('\nFinished converting dataset!')
   print('The converted data is stored in the directory: "' + output_dir + '"')

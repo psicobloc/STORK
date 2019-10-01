@@ -1,7 +1,4 @@
 import tensorflow as tf
-from tensorflow.compat.v1 import ConfigProto
-#from tensorflow.compat.v1 import InteractiveSession
-
 slim = tf.contrib.slim
 import sys
 import os
@@ -13,11 +10,8 @@ from preprocessing import inception_preprocessing
 from os import listdir
 from os.path import isfile, join
 from os import walk
-os.environ['CUDA_VISIBLE_DEVICES'] = '' #Uncomment this line to run prediction on CPU.
-config = ConfigProto()
-config.gpu_options.allow_growth = True # NOTE:  arregla el problema de correr con una rtx
-#session = InteractiveSession(config=config)
-session = tf.Session(config=config)
+#os.environ['CUDA_VISIBLE_DEVICES'] = '' #Uncomment this line to run prediction on CPU.
+session = tf.Session()
 
 def get_test_images(mypath):
 	return [mypath + '/' + f for f in listdir(mypath) if isfile(join(mypath, f)) and f.find('.jpg') != -1]
